@@ -665,10 +665,6 @@
     // python.pythonPath is deprecated
     // "python.pythonPath": "${workspaceFolder}/kit/python/bin/python3",
 
-
-    // This enables python language server. Seems to work slightly better than jedi:
-    "python.jediEnabled": false, 
-
     // We use "black" as a formatter:
     "python.formatting.provider": "black",
     "python.formatting.blackArgs": ["--line-length", "120"],
@@ -676,5 +672,4 @@
     // Use flake8 for linting
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
-    "python.languageServer": "Pylance"
 }
