@@ -12,3 +12,8 @@
 !/standalone_examples/api
 !/standalone_examples/api/isaacsim.core.api
 !/standalone_examples/api/isaacsim.core.api/time_stepping.py
+
+!/standalone_examples
+!/standalone_examples/api
+!/standalone_examples/api/isaacsim.asset.importer.urdf
+!/standalone_examples/api/isaacsim.asset.importer.urdf/urdf_import.py
