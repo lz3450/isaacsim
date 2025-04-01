@@ -7,10 +7,11 @@
 # license agreement from NVIDIA CORPORATION is strictly prohibited.
 #
 
-from isaacsim import SimulationApp
+from isaacsim.simulation_app import SimulationApp
 
 # URDF import, configuration and simulation sample
 kit = SimulationApp({"renderer": "RaytracedLighting", "headless": False})
+
 import omni.kit.commands
 from isaacsim.core.prims import Articulation
 from isaacsim.core.utils.extensions import get_extension_path_from_name

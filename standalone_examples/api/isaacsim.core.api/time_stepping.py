@@ -9,11 +9,11 @@
 
 from isaacsim.simulation_app import SimulationApp
 
+simulation_app = SimulationApp({"headless": True})
+
 from isaacsim.core.api import SimulationContext
 from isaacsim.core.utils.stage import add_reference_to_stage
 from isaacsim.storage.native import get_assets_root_path
-
-simulation_app = SimulationApp({"headless": True})
 
 assets_root_path = get_assets_root_path()
 assets_root_path = assets_root_path if assets_root_path else ""
