@@ -1,3 +1,10 @@
 *
 
 !/.gitignore
+!/cspell.json
+!/.vscode
+!/.vscode/*
+
+!/python.sh
+!/setup_python_env.sh
+
