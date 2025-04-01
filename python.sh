@@ -18,6 +18,7 @@ export EXP_PATH=$SCRIPT_DIR/apps
 source ${SCRIPT_DIR}/setup_python_env.sh
 
 # By default use our python, but allow overriding it by checking if PYTHONEXE env var is defined:
+export PYTHONEXE="/usr/bin/python3"
 python_exe=${PYTHONEXE:-"${SCRIPT_DIR}/kit/python/bin/python3"}
 
 
