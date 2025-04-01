@@ -8,3 +8,7 @@
 !/python.sh
 !/setup_python_env.sh
 
+!/standalone_examples
+!/standalone_examples/api
+!/standalone_examples/api/isaacsim.core.api
+!/standalone_examples/api/isaacsim.core.api/time_stepping.py
