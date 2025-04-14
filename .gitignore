@@ -4,6 +4,7 @@
 !/cspell.json
 !/.vscode
 !/.vscode/*
+!pyrightconfig.json
 
 !/python.sh
 !/setup_python_env.sh
