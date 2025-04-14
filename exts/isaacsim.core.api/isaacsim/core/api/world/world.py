@@ -90,7 +90,7 @@ class World(SimulationContext):
         rendering_dt: Optional[float] = None,
         stage_units_in_meters: Optional[float] = None,
         physics_prim_path: str = "/physicsScene",
-        sim_params: dict = None,
+        sim_params: Optional[dict] = None,
         set_defaults: bool = True,
         backend: str = "numpy",
         device: Optional[str] = None,
