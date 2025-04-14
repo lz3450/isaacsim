@@ -27,3 +27,11 @@
 !/standalone_examples/api
 !/standalone_examples/api/isaacsim.cortex.framework
 !/standalone_examples/api/isaacsim.cortex.framework/franka_examples_main.py
+
+!/exts
+!/exts/isaacsim.core.api
+!/exts/isaacsim.core.api/isaacsim
+!/exts/isaacsim.core.api/isaacsim/core
+!/exts/isaacsim.core.api/isaacsim/core/api
+!/exts/isaacsim.core.api/isaacsim/core/api/world
+!/exts/isaacsim.core.api/isaacsim/core/api/world/world.py
