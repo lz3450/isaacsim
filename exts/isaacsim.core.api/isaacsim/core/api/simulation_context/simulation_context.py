@@ -13,7 +13,7 @@ import builtins
 import gc
 
 # python
-from typing import Callable, Optional
+from typing import Callable, Optional, TypeVar, Type
 
 import carb
 
@@ -40,6 +40,8 @@ from isaacsim.core.utils.stage import (
 )
 from pxr import Usd
 
+
+T = TypeVar('T', bound='SimulationContext')
 
 class SimulationContext:
     """This class provide functions that take care of many time-related events such as
@@ -161,7 +163,7 @@ class SimulationContext:
         )
         return
 
-    def __new__(cls, *args, **kwargs) -> SimulationContext:
+    def __new__(cls: Type[T], *args, **kwargs) -> T:
         """Makes the class a singleton.
 
         Returns:
@@ -178,7 +180,7 @@ class SimulationContext:
     """
 
     @classmethod
-    def instance(cls) -> SimulationContext:
+    def instance(cls) -> Optional[SimulationContext]:
         """Get the instance of the class, if it was instantiated before
 
         Returns:
