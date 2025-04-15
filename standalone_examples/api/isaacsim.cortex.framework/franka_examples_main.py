@@ -9,7 +9,7 @@
 
 import argparse
 
-from isaacsim import SimulationApp
+from isaacsim.simulation_app import SimulationApp
 
 parser = argparse.ArgumentParser("franka_examples")
 parser.add_argument(
@@ -24,11 +24,10 @@ simulation_app = SimulationApp({"headless": False})
 
 import numpy as np
 from behaviors.franka.franka_behaviors import ContextStateMonitor, behaviors
-from isaacsim.core.api.objects import DynamicCuboid, VisualCuboid
+from isaacsim.core.api.objects import DynamicCuboid
 from isaacsim.cortex.framework.cortex_utils import load_behavior_module
-from isaacsim.cortex.framework.cortex_world import Behavior, CortexWorld, LogicalStateMonitor
-from isaacsim.cortex.framework.robot import add_franka_to_stage
-from isaacsim.cortex.framework.tools import SteadyRate
+from isaacsim.cortex.framework.cortex_world import CortexWorld
+from isaacsim.cortex.framework.robot import add_franka_to_stage, CortexFranka
 
 
 class CubeSpec:
@@ -40,7 +39,7 @@ class CubeSpec:
 def main():
     world = CortexWorld()
     context_monitor = ContextStateMonitor(print_dt=0.25)
-    robot = world.add_robot(add_franka_to_stage(name="franka", prim_path="/World/Franka"))
+    robot: CortexFranka = world.add_robot(add_franka_to_stage(name="franka", prim_path="/World/Franka")) # type: ignore
 
     obs_specs = [
         CubeSpec("RedCube", [0.7, 0.0, 0.0]),
