@@ -97,7 +97,7 @@ class Scene(object):
         """
         return get_current_stage()
 
-    def add(self, obj) -> SingleXFormPrim:
+    def add(self, obj):
         """Add an object to the scene registry
 
         Args:
