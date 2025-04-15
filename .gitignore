@@ -9,6 +9,9 @@
 !/python.sh
 !/setup_python_env.sh
 
+!/robotrace
+!/robotrace/*
+
 !/standalone_examples
 !/standalone_examples/api
 !/standalone_examples/tutorials
