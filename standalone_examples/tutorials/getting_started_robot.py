@@ -7,7 +7,7 @@
 # license agreement from NVIDIA CORPORATION is strictly prohibited.
 #
 
-from isaacsim import SimulationApp
+from isaacsim.simulation_app import SimulationApp
 
 simulation_app = SimulationApp({"headless": False})  # start the simulation app, with GUI open
 
@@ -18,7 +18,6 @@ import numpy as np
 from isaacsim.core.api import World
 from isaacsim.core.prims import Articulation
 from isaacsim.core.utils.stage import add_reference_to_stage, get_stage_units
-from isaacsim.core.utils.types import ArticulationAction
 from isaacsim.core.utils.viewports import set_camera_view
 from isaacsim.storage.native import get_assets_root_path
 
@@ -57,15 +56,15 @@ for i in range(4):
     if i == 1 or i == 3:
         print("moving")
         # move the arm
-        arm.set_joint_positions([[-1.5, 0.0, 0.0, -1.5, 0.0, 1.5, 0.5, 0.04, 0.04]])
+        arm.set_joint_positions(np.array([[-1.5, 0.0, 0.0, -1.5, 0.0, 1.5, 0.5, 0.04, 0.04]]))
         # move the car
-        car.set_joint_velocities([[1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]])
+        car.set_joint_velocities(np.array([[1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]))
     if i == 2:
         print("stopping")
         # reset the arm
-        arm.set_joint_positions([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])
+        arm.set_joint_positions(np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]))
         # stop the car
-        car.set_joint_velocities([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])
+        car.set_joint_velocities(np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]))
 
     for j in range(100):
         # step the simulation, both rendering and physics
