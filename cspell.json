@@ -11,7 +11,8 @@
         "Omniverse",
         "pyrightconfig",
         "robotrace",
-        "viewports"
+        "viewports",
+        "Xform"
     ],
     "ignoreWords": [],
     "import": []
