@@ -8,6 +8,8 @@
 
 !/python.sh
 !/setup_python_env.sh
+!/setup.sh
+!/python
 
 !/robotrace
 !/robotrace/*
