@@ -1,5 +1,6 @@
 *
 
+
 !/.gitignore
 !/cspell.json
 !/.vscode
@@ -10,6 +11,10 @@
 !/setup_python_env.sh
 !/setup.sh
 !/python
+
+!/python_packages
+!/python_packages/**
+/python_packages/**/__pycache__
 
 !/robotrace
 !/robotrace/*
