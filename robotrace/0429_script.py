@@ -32,26 +32,30 @@ def get_ros_domain_id() -> int:
 
 def get_action_graph_nodes() -> List[Tuple[str, Any]]:
     return [
-        ("OnPlaybackTick", "omni.graph.action.OnPlaybackTick"),
-        ("OnImpulseEvent", "omni.graph.action.OnImpulseEvent"),
-        ("Context", "isaacsim.ros2.bridge.ROS2Context"),
-        ("PublishJointState", "isaacsim.ros2.bridge.ROS2PublishJointState"),
-        ("SubscribeJointState", "isaacsim.ros2.bridge.ROS2SubscribeJointState"),
         ("ArticulationController", "isaacsim.core.nodes.IsaacArticulationController"),
+        ("Context", "isaacsim.ros2.bridge.ROS2Context"),
+        ("OnImpulseEvent", "omni.graph.action.OnImpulseEvent"),
+        ("OnPlaybackTick", "omni.graph.action.OnPlaybackTick"),
+        ("PublishClock", "isaacsim.ros2.bridge.ROS2PublishClock"),
+        ("PublishJointState", "isaacsim.ros2.bridge.ROS2PublishJointState"),
         ("ReadSimTime", "isaacsim.core.nodes.IsaacReadSimulationTime"),
+        ("SubscribeJointState", "isaacsim.ros2.bridge.ROS2SubscribeJointState"),
     ]
 
 
 def get_action_graph_connections() -> List[Tuple[str, Any]]:
     return [
+        ("Context.outputs:context", "PublishClock.inputs:context"),
+        ("OnImpulseEvent.outputs:execOut", "PublishClock.inputs:execIn"),
+        ("OnPlaybackTick.outputs:tick", "ArticulationController.inputs:execIn"),
         ("OnPlaybackTick.outputs:tick", "PublishJointState.inputs:execIn"),
         ("OnPlaybackTick.outputs:tick", "SubscribeJointState.inputs:execIn"),
-        ("OnPlaybackTick.outputs:tick", "ArticulationController.inputs:execIn"),
+        ("ReadSimTime.outputs:simulationTime", "PublishClock.inputs:timeStamp"),
         ("ReadSimTime.outputs:simulationTime", "PublishJointState.inputs:timeStamp"),
+        ("SubscribeJointState.outputs:effortCommand", "ArticulationController.inputs:effortCommand"),
         ("SubscribeJointState.outputs:jointNames", "ArticulationController.inputs:jointNames"),
         ("SubscribeJointState.outputs:positionCommand", "ArticulationController.inputs:positionCommand"),
         ("SubscribeJointState.outputs:velocityCommand", "ArticulationController.inputs:velocityCommand"),
-        ("SubscribeJointState.outputs:effortCommand", "ArticulationController.inputs:effortCommand"),
     ]
 
 
