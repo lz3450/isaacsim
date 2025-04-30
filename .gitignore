@@ -9,6 +9,7 @@
 
 !/python.sh
 !/setup_python_env.sh
+!/jupyter_notebook.sh
 !/setup.sh
 !/python
 
