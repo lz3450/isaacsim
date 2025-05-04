@@ -15,4 +15,4 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$SCRIPT_DIR/exts/omni.usd.schema.isaac/
 export RESOURCE_NAME="IsaacSim"
 export LD_PRELOAD="$SCRIPT_DIR/kit/libcarb.so"
 
-$PYTHONEXE "$@" || (echo "Failed to run $PYTHONEXE $@" && exit 127)
+"$PYTHONEXE" "$@" || (echo "Failed to run $PYTHONEXE $@" && exit 127)

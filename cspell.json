@@ -7,9 +7,13 @@
         "carb",
         "Commandable",
         "Franka",
+        "ipynb",
         "isaacsim",
+        "kernelspec",
+        "nbconvert",
         "Omniverse",
         "pyrightconfig",
+        "PYTHONEXE",
         "robotrace",
         "viewports",
         "Xform"
