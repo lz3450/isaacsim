@@ -3,7 +3,16 @@
     "ignorePaths": [],
     "dictionaryDefinitions": [],
     "dictionaries": [],
-    "words": [],
+    "words": [
+        "CARB",
+        "extscache",
+        "iray",
+        "isaacsim",
+        "libcarb",
+        "prebundle",
+        "PYTHONEXE",
+        "urdf"
+    ],
     "ignoreWords": [],
     "import": []
 }
