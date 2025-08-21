@@ -1,11 +1,14 @@
 *
 
+# helper files
 !/.gitignore
 !/.vscode
 !/.vscode/*
 !/cspell.json
 
+# root dir scripts
 !/python.sh
+!/jupyter_notebook.sh
 !/rg_setup.sh
 
 !/roboguard
