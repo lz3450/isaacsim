@@ -6,4 +6,8 @@
 !/cspell.json
 
 !/python.sh
-!/python
+!/rg_setup.sh
+
+!/roboguard
+!/roboguard/tests
+!/roboguard/tests/*
