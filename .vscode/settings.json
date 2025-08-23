@@ -635,8 +635,17 @@
         "kit/plugins/bindings-python",
         "kit/python/lib/python3.11",
         "kit/python/lib/python3.11/site-packages",
+        // ROS2
+        "../IsaacSim-ros_workspaces/build_ws/humble/humble_ws/install/local/lib/python3.11/dist-packages",
+        "../IsaacSim-ros_workspaces/build_ws/humble/humble_ws/install/lib/python3.11/site-packages",
+        "../IsaacSim-ros_workspaces/build_ws/humble/isaac_sim_ros_ws/install/isaac_ros_navigation_goal/lib/python3.11/site-packages",
+        "../IsaacSim-ros_workspaces/build_ws/humble/isaac_sim_ros_ws/install/isaac_ros2_messages/local/lib/python3.11/dist-packages",
+        "../IsaacSim-ros_workspaces/build_ws/humble/isaac_sim_ros_ws/install/custom_message/local/lib/python3.11/dist-packages"
     ],
     "python.defaultInterpreterPath": "${workspaceFolder}/kit/python/bin/python3",
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportShadowedImports": "none"
+    },
     // Ruff
     "ruff.lint.ignore": [
         "E402",
