@@ -9,7 +9,7 @@
 # root dir scripts
 !/python.sh
 !/jupyter_notebook.sh
-!/rg_setup.sh
+!/setup.sh
 
 !/roboguard
 !/roboguard/tests
