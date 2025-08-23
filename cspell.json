@@ -6,13 +6,16 @@
     "words": [
         "CARB",
         "extscache",
+        "franka",
         "iray",
         "isaacsim",
         "libcarb",
+        "Omniverse",
         "prebundle",
         "PYTHONEXE",
         "roboguard",
-        "urdf"
+        "urdf",
+        "viewports"
     ],
     "ignoreWords": [],
     "import": []
