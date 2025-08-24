@@ -14,3 +14,12 @@
 !/roboguard
 !/roboguard/tests
 !/roboguard/tests/*
+
+# core api
+!exts
+!exts/isaacsim.core.api
+!exts/isaacsim.core.api/isaacsim
+!exts/isaacsim.core.api/isaacsim/core
+!exts/isaacsim.core.api/isaacsim/core/api
+!exts/isaacsim.core.api/isaacsim/core/api/world
+!exts/isaacsim.core.api/isaacsim/core/api/world/world.py
