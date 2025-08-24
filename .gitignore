@@ -22,8 +22,9 @@
 !exts/isaacsim.core.api/isaacsim/core
 !exts/isaacsim.core.api/isaacsim/core/api
 
-!exts/isaacsim.core.api/isaacsim/core/api/world
-!exts/isaacsim.core.api/isaacsim/core/api/world/world.py
-
+!exts/isaacsim.core.api/isaacsim/core/api/scenes/
+!exts/isaacsim.core.api/isaacsim/core/api/scenes/scene.py
 !exts/isaacsim.core.api/isaacsim/core/api/simulation_context
 !exts/isaacsim.core.api/isaacsim/core/api/simulation_context/simulation_context.py
+!exts/isaacsim.core.api/isaacsim/core/api/world
+!exts/isaacsim.core.api/isaacsim/core/api/world/world.py
