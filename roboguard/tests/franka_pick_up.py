@@ -32,11 +32,14 @@ asset_path = assets_root_path + "/Isaac/Robots/FrankaRobotics/FrankaPanda/franka
 robot = add_reference_to_stage(usd_path=asset_path, prim_path="/World/Franka")
 robot.GetVariantSet("Gripper").SetVariantSelection("AlternateFinger")
 robot.GetVariantSet("Mesh").SetVariantSelection("Quality")
+
+gripper_joint_opened_positions=np.array([0.05, 0.05])
+gripper_joint_closed_positions=np.array([0.02, 0.02])
 gripper = ParallelGripper(
     end_effector_prim_path="/World/Franka/panda_rightfinger",
     joint_prim_names=["panda_finger_joint1", "panda_finger_joint2"],
-    joint_opened_positions=np.array([0.05, 0.05]),
-    joint_closed_positions=np.array([0.02, 0.02]),
+    joint_opened_positions=gripper_joint_opened_positions,
+    joint_closed_positions=gripper_joint_closed_positions,
     action_deltas=np.array([0.01, 0.01]),
 )
 
@@ -61,7 +64,7 @@ cube = DynamicCuboid(
 my_world.scene.scene_registry.add_rigid_object(cube_name, cube)
 
 my_world.scene.add_default_ground_plane()
-my_franka.gripper.set_default_state(my_franka.gripper.joint_opened_positions)
+my_franka.gripper.set_default_state(gripper_joint_opened_positions)
 my_world.reset()
 
 my_controller = PickPlaceController(
