@@ -10,13 +10,19 @@ else
 fi
 echo "ISAAC_SIM_ROOT_DIR=$ISAAC_SIM_ROOT_DIR"
 
-ISAAC_SIM_ROS2_SETUP="$ISAAC_SIM_ROOT_DIR/../IsaacSim-ros_workspaces/build_ws/humble/humble_ws/install/local_setup.$shell"
-if [[ -f "$ISAAC_SIM_ROS2_SETUP" ]]; then
-    export RMW_IMPLEMENTATION="rmw_fastrtps_cpp"
-    # export RMW_IMPLEMENTATION="rmw_cyclonedds_cpp"
-    export ROS_PYTHON_VERSION=3
+# export RMW_IMPLEMENTATION="rmw_fastrtps_cpp"
+# export RMW_IMPLEMENTATION="rmw_cyclonedds_cpp"
+
+ISAAC_SIM_ROS2_HUMBLE_SETUP="$ISAAC_SIM_ROOT_DIR/../IsaacSim-ros_workspaces/build_ws/humble/humble_ws/install/local_setup.$shell"
+if [[ -f "$ISAAC_SIM_ROS2_HUMBLE_SETUP" ]]; then
     echo "isaac_sim_ros2_humble ($shell)"
-    . "$ISAAC_SIM_ROS2_SETUP"
+    . "$ISAAC_SIM_ROS2_HUMBLE_SETUP"
+fi
+
+ISAAC_SIM_ROS2_WS_SETUP="$ISAAC_SIM_ROOT_DIR/../IsaacSim-ros_workspaces/build_ws/humble/isaac_sim_ros_ws/install/local_setup.$shell"
+if [[ -f "$ISAAC_SIM_ROS2_WS_SETUP" ]]; then
+    echo "isaac_sim_ros2_ws ($shell)"
+    . "$ISAAC_SIM_ROS2_WS_SETUP"
 fi
 
 export PATH="$ISAAC_SIM_ROOT_DIR:$PATH"
