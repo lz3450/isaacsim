@@ -166,7 +166,7 @@ class SimulationContext:
         )
         return
 
-    def __new__(cls) -> Self:
+    def __new__(cls, *args, **kwargs) -> Self:
         """Makes the class a singleton.
 
         Returns:

@@ -101,8 +101,7 @@ class World(SimulationContext):
         backend: str = "numpy",
         device: Optional[str] = None,
     ) -> None:
-        SimulationContext.__init__(
-            self,
+        super().__init__(
             physics_dt=physics_dt,
             rendering_dt=rendering_dt,
             stage_units_in_meters=stage_units_in_meters,
@@ -133,12 +132,12 @@ class World(SimulationContext):
 
             >>> World.clear_instance()
         """
-        if World._world_initialized:
-            if World._instance is not None and hasattr(World._instance, "_scene"):
-                del World._instance._scene
+        if cls._world_initialized:
+            if cls._instance is not None and hasattr(cls._instance, "_scene"):
+                del cls._instance._scene
                 gc.collect()
-            World._world_initialized = False
-            SimulationContext.clear_instance()
+            cls._world_initialized = False
+            super().clear_instance()
         return
 
     ### Properties
