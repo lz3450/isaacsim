@@ -112,12 +112,13 @@ class Scene(object):
         """Add an object to the scene registry
 
         Args:
-            obj (SingleXFormPrim | Robot): object to be added
+            obj (SingleXFormPrim): object to be added
+
         Raises:
             Exception: The object type is not supported yet
 
         Returns:
-            SingleXFormPrim | Robot: object
+            SingleXFormPrim: object
 
         Example:
 
