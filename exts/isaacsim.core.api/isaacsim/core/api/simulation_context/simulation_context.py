@@ -19,18 +19,12 @@ import builtins
 import gc
 
 # python
-from typing import Callable, Optional
+from typing import Callable, Optional, Self
 
 import carb
 
-# isaac-core
-import isaacsim.core.utils.numpy as np_utils
-import isaacsim.core.utils.torch as torch_utils
-import isaacsim.core.utils.warp as warp_utils
-
 # omniverse
 import omni.kit.app
-import omni.physics.tensors
 from isaacsim.core.api.physics_context import PhysicsContext
 from isaacsim.core.simulation_manager import IsaacEvents, SimulationManager
 from isaacsim.core.utils.carb import get_carb_setting, set_carb_setting
@@ -42,7 +36,6 @@ from isaacsim.core.utils.stage import (
     get_current_stage,
     set_stage_units,
     set_stage_up_axis,
-    update_stage_async,
     use_stage,
 )
 from pxr import Usd
@@ -95,8 +88,8 @@ class SimulationContext:
         <isaacsim.core.api.simulation_context.simulation_context.SimulationContext object at 0x...>
     """
 
-    _instance = None
-    _sim_context_initialized = False
+    _instance: Optional[Self] = None
+    _sim_context_initialized: bool = False
 
     def __init__(
         self,
@@ -104,7 +97,7 @@ class SimulationContext:
         rendering_dt: Optional[float] = None,
         stage_units_in_meters: Optional[float] = None,
         physics_prim_path: str = "/physicsScene",
-        sim_params: dict = None,
+        sim_params: dict | None = None,
         set_defaults: bool = True,
         backend: str = "numpy",
         device: Optional[str] = None,
@@ -147,7 +140,6 @@ class SimulationContext:
                 self._initial_rendering_dt = 1.0 / get_current_stage().GetTimeCodesPerSecond()
 
         if builtins.ISAAC_LAUNCHED_FROM_TERMINAL is False:
-
             if self.is_playing():
                 self.stop()
             self._init_stage(
@@ -174,22 +166,19 @@ class SimulationContext:
         )
         return
 
-    def __new__(cls, *args, **kwargs) -> SimulationContext:
+    def __new__(cls) -> Self:
         """Makes the class a singleton.
 
         Returns:
             SimulationContext: The instance of the simulation context.
         """
-        if SimulationContext._instance is None:
-            SimulationContext._instance = super(SimulationContext, cls).__new__(cls)
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
         else:
             carb.log_info("Simulation Context is defined already, returning the previously defined one")
-        return SimulationContext._instance
+        return cls._instance
 
-    """
-    Instance handling.
-    """
-
+    ### Instance handling
     @classmethod
     def instance(cls) -> SimulationContext:
         """Get the instance of the class, if it was instantiated before

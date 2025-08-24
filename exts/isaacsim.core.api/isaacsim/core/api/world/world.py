@@ -13,15 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import gc
-
 # python
-from typing import List, Optional
+from __future__ import annotations
 
-from isaacsim.core.api.loggers import DataLogger
-from isaacsim.core.api.scenes.scene import Scene
+import gc
+from typing import Optional
 
 # isaac-core
+from isaacsim.core.api.loggers import DataLogger
+from isaacsim.core.api.scenes.scene import Scene
 from isaacsim.core.api.simulation_context import SimulationContext
 from isaacsim.core.api.tasks import BaseTask
 from isaacsim.core.simulation_manager import IsaacEvents
@@ -88,7 +88,7 @@ class World(SimulationContext):
         <isaacsim.core.api.world.world.World object at 0x...>
     """
 
-    _world_initialized = False
+    _world_initialized: bool = False
 
     def __init__(
         self,
@@ -96,7 +96,7 @@ class World(SimulationContext):
         rendering_dt: Optional[float] = None,
         stage_units_in_meters: Optional[float] = None,
         physics_prim_path: str = "/physicsScene",
-        sim_params: dict = None,
+        sim_params: dict | None = None,
         set_defaults: bool = True,
         backend: str = "numpy",
         device: Optional[str] = None,
@@ -116,17 +116,13 @@ class World(SimulationContext):
             return
         World._world_initialized = True
         self._task_scene_built = False
-        self._current_tasks = dict()
+        self._current_tasks: dict[str, BaseTask] = dict()
         self._scene = Scene()
         # if not builtins.ISAAC_LAUNCHED_FROM_TERMINAL:
         #     self.start_simulation()
         self._data_logger = DataLogger()
-        return
 
-    """
-    Instance handling.
-    """
-
+    ### Instance handling
     @classmethod
     def clear_instance(cls):
         """Delete the world object, if it was instantiated before, and destroy any subscribed callback
@@ -138,17 +134,14 @@ class World(SimulationContext):
             >>> World.clear_instance()
         """
         if World._world_initialized:
-            if hasattr(SimulationContext._instance, "_scene"):
-                del SimulationContext._instance._scene
+            if World._instance is not None and hasattr(World._instance, "_scene"):
+                del World._instance._scene
                 gc.collect()
             World._world_initialized = False
             SimulationContext.clear_instance()
         return
 
-    """
-    Properties.
-    """
-
+    ### Properties
     @property
     def scene(self) -> Scene:
         """
@@ -164,10 +157,7 @@ class World(SimulationContext):
         """
         return self._scene
 
-    """
-    Operations - Tasks management.
-    """
-
+    ### Operations - Tasks management
     def add_task(self, task: BaseTask) -> None:
         """Add a task to the task registry
 
@@ -215,11 +205,11 @@ class World(SimulationContext):
         """
         return self._task_scene_built
 
-    def get_current_tasks(self) -> List[BaseTask]:
+    def get_current_tasks(self) -> dict[str, BaseTask]:
         """Get a dictionary of the registered tasks where keys are task names
 
         Returns:
-            List[BaseTask]: registered tasks
+            dict[str, BaseTask]: registered tasks
 
         Example:
 
@@ -244,10 +234,7 @@ class World(SimulationContext):
             raise Exception("task name {} doesn't exist in the current world tasks.".format(name))
         return self._current_tasks[name]
 
-    """
-    Operations - Tasks state collection.
-    """
-
+    ### Operations - Tasks state collection
     def get_observations(self, task_name: Optional[str] = None) -> dict:
         """Get observations from all the tasks that were added
 
@@ -272,7 +259,7 @@ class World(SimulationContext):
                 observations.update(task.get_observations())
             return observations
 
-    def calculate_metrics(self, task_name: Optional[str] = None) -> None:
+    def calculate_metrics(self, task_name: Optional[str] = None) -> dict:
         """Get metrics from all the tasks that were added
 
         Args:
@@ -318,10 +305,7 @@ class World(SimulationContext):
             result = [task.is_done() for task in self._current_tasks.values()]
             return all(result)
 
-    """
-    Operations - Data logger.
-    """
-
+    ### Operations - Data logger
     def get_data_logger(self) -> DataLogger:
         """Return the data logger of the world.
 
@@ -337,10 +321,7 @@ class World(SimulationContext):
         """
         return self._data_logger
 
-    """
-    Operations.
-    """
-
+    ### Other operations
     def initialize_physics(self) -> None:
         """Initialize the physics simulation view and each added object to the Scene
 
@@ -537,19 +518,18 @@ class World(SimulationContext):
         if self._task_scene_built:
             for task in self._current_tasks.values():
                 task.pre_step(self.current_time_step_index, self.current_time)
-        if self.scene._enable_bounding_box_computations:
-            self.scene._bbox_cache.SetTime(Usd.TimeCode(self._current_time))
+        if self.scene.bbox_cache is not None:
+            self.scene.bbox_cache.SetTime(Usd.TimeCode(self._current_time))
 
         if step_sim:
             SimulationContext.step(self, render=render)
         if self._data_logger.is_started():
-            if self._data_logger._data_frame_logging_func is None:
+            if self._data_logger.data_frame_logging_func is None:
                 raise Exception("You need to add data logging function before starting the data logger")
-            data = self._data_logger._data_frame_logging_func(tasks=self.get_current_tasks(), scene=self.scene)
+            data = self._data_logger.data_frame_logging_func(self.get_current_tasks(), self.scene)
             self._data_logger.add_data(
                 data=data, current_time_step=self.current_time_step_index, current_time=self.current_time
             )
-        return
 
     def step_async(self, step_size: Optional[float] = None) -> None:
         """Call all functions that should be called pre stepping the physics
@@ -576,12 +556,13 @@ class World(SimulationContext):
         if self._task_scene_built:
             for task in self._current_tasks.values():
                 task.pre_step(self.current_time_step_index, self.current_time)
-        if self.scene._enable_bounding_box_computations:
-            self.scene._bbox_cache.SetTime(Usd.TimeCode(self._current_time))
+        if self.scene.bbox_cache is None:
+            raise Exception("You need to enable bounding box computations in the scene to use the bbox cache")
+        self.scene.bbox_cache.SetTime(Usd.TimeCode(self._current_time))
         if self._data_logger.is_started():
-            if self._data_logger._data_frame_logging_func is None:
+            if self._data_logger.data_frame_logging_func is None:
                 raise Exception("You need to add data logging function before starting the data logger")
-            data = self._data_logger._data_frame_logging_func(tasks=self.get_current_tasks(), scene=self.scene)
+            data = self._data_logger.data_frame_logging_func(self.get_current_tasks(), self.scene)
             self._data_logger.add_data(
                 data=data, current_time_step=self.current_time_step_index, current_time=self.current_time
             )

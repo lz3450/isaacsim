@@ -14,7 +14,7 @@
 # limitations under the License.
 import builtins
 import gc
-from typing import Optional, Tuple
+from typing import Optional
 
 import carb
 import numpy as np
@@ -77,14 +77,11 @@ class Scene(object):
 
     def __init__(self) -> None:
         self._scene_registry = SceneRegistry()
-        self._enable_bounding_box_computations = False
         self._bbox_cache = None
-        return
 
     def __del__(self):
         self.clear(registry_only=True)
         gc.collect()
-        return
 
     @property
     def stage(self) -> Usd.Stage:
@@ -103,17 +100,24 @@ class Scene(object):
         """
         return get_current_stage()
 
+    @property
+    def scene_registry(self):
+        return self._scene_registry
+
+    @property
+    def bbox_cache(self):
+        return self._bbox_cache
+
     def add(self, obj: SingleXFormPrim) -> SingleXFormPrim:
         """Add an object to the scene registry
 
         Args:
-            obj (SingleXFormPrim): object to be added
-
+            obj (SingleXFormPrim | Robot): object to be added
         Raises:
             Exception: The object type is not supported yet
 
         Returns:
-            SingleXFormPrim: object
+            SingleXFormPrim | Robot: object
 
         Example:
 
@@ -125,8 +129,10 @@ class Scene(object):
             >>> scene.add(prims)
             <isaacsim.core.prims.XFormPrim object at 0x...>
         """
-        if self._scene_registry.name_exists(obj.name):
-            raise Exception("Cannot add the object {} to the scene since its name is not unique".format(obj.name))
+        if obj.name is None:
+            raise Exception("Cannot add the object to the scene since its name is None")
+        elif self._scene_registry.name_exists(obj.name):
+            raise Exception(f"Cannot add the object {obj.name} to the scene since its name is not unique")
         if isinstance(obj, SingleRigidPrim):
             self._scene_registry.add_rigid_object(name=obj.name, rigid_object=obj)
         elif isinstance(obj, RigidPrim):
@@ -327,7 +333,7 @@ class Scene(object):
                     del prim_object
                 else:
                     prim_registery[prim_name].post_reset()
-        if self._enable_bounding_box_computations:
+        if self._bbox_cache is not None:
             self._bbox_cache.Clear()
         gc.collect()
         return
@@ -529,7 +535,7 @@ class Scene(object):
                 self.remove_object(deformable_material_name, registry_only=registry_only)
         return
 
-    def compute_object_AABB(self, name: str) -> Tuple[np.ndarray, np.ndarray]:
+    def compute_object_AABB(self, name: str) -> tuple[np.ndarray, np.ndarray] | None:
         """Compute the bounding box points (minimum and maximum) of a registered object given its name
 
         .. warning::
@@ -558,15 +564,15 @@ class Scene(object):
             >>> bbox[1]  # maximum
             array([50., 50.,  0.])
         """
-        if not self._enable_bounding_box_computations:
+        if self._bbox_cache is None:
             raise Exception("bounding box computations should be enabled before querying AABB of an object")
         prim_object = self.get_object(name)
         if not hasattr(prim_object, "prim"):
-            carb.log_error(f"Computing AABB bounds supported only for single classes.")
+            carb.log_error("Computing AABB bounds supported only for single classes.")
             return
         bounds = self._bbox_cache.ComputeWorldBound(prim_object.prim)
         prim_range = bounds.ComputeAlignedRange()
-        return np.array([np.array(prim_range.GetMin()), np.array(prim_range.GetMax())])
+        return (np.array(prim_range.GetMin()), np.array(prim_range.GetMax()))
 
     def enable_bounding_boxes_computations(self) -> None:
         """Enable the bounding boxes computations
@@ -580,8 +586,6 @@ class Scene(object):
         self._bbox_cache = UsdGeom.BBoxCache(
             time=Usd.TimeCode.Default(), includedPurposes=[UsdGeom.Tokens.default_], useExtentsHint=False
         )
-        self._enable_bounding_box_computations = True
-        return
 
     def disable_bounding_boxes_computations(self) -> None:
         """Disable the bounding boxes computations
@@ -593,5 +597,4 @@ class Scene(object):
             >>> scene.disable_bounding_boxes_computations()
         """
         self._bbox_cache = None
-        self._enable_bounding_box_computations = False
         return

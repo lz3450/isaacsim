@@ -26,7 +26,7 @@ class DataLogger:
     def __init__(self) -> None:
         self._pause = True
         self._data_frames = []
-        self._data_frame_logging_func = None
+        self.data_frame_logging_func: Callable[[dict[str, BaseTask], Scene], Dict] | None = None
 
     def add_data(self, data: dict, current_time_step: float, current_time: float) -> None:
         """Adds data to the log
@@ -37,7 +37,6 @@ class DataLogger:
             current_time (float): time in seconds corresponding to the data collected.
         """
         self._data_frames.append(DataFrame(current_time_step=current_time_step, current_time=current_time, data=data))
-        return
 
     def get_num_of_data_frames(self) -> int:
         """
@@ -50,12 +49,10 @@ class DataLogger:
     def pause(self) -> None:
         """Pauses data collection."""
         self._pause = True
-        return
 
     def start(self) -> None:
         """Resumes/ starts data collection."""
         self._pause = False
-        return
 
     def is_started(self) -> bool:
         """
@@ -68,7 +65,6 @@ class DataLogger:
         """Clears the data in the logger."""
         self._pause = True
         self._data_frames = []
-        return
 
     def get_data_frame(self, data_frame_index: int) -> DataFrame:
         """
@@ -81,18 +77,17 @@ class DataLogger:
         """
         return self._data_frames[data_frame_index]
 
-    def add_data_frame_logging_func(self, func: Callable[[List[BaseTask], Scene], Dict]) -> None:
+    def add_data_frame_logging_func(self, func: Callable[[dict[str, BaseTask], Scene], Dict]) -> None:
         """
 
         Args:
-            func (Callable[[list[BaseTask], Scene], None]): function to be called at every step when the logger is started.
+            func (Callable[[dict[str, BaseTask], Scene], None]): function to be called at every step when the logger is started.
                                                             should follow:
 
                                                             def dummy_data_collection_fn(tasks, scene):
                                                                 return {"data 1": [data]}
         """
-        self._data_frame_logging_func = func
-        return
+        self.data_frame_logging_func = func
 
     def save(self, log_path: str) -> None:
         """
@@ -115,10 +110,9 @@ class DataLogger:
         """
         self._pause = True
         self._data_frames = []
-        self._data_frame_logging_func = None
+        self.data_frame_logging_func = None
         with open(log_path) as json_file:
             json_data = json.load(json_file)
             data_frames = json_data["Isaac Sim Data"]
             data_frames = [DataFrame.init_from_dict(dict_representation=data_frame) for data_frame in data_frames]
             self._data_frames = data_frames
-        return
