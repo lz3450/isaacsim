@@ -23,7 +23,10 @@ import typing
 # omniverse
 import carb
 import omni.kit.app
+import omni.kit.commands
+import omni.usd
 import usdrt
+import usdrt.Usd
 
 # isaacsim
 from isaacsim.core.utils.constants import AXES_TOKEN
@@ -36,7 +39,7 @@ _context = threading.local()  # thread-local storage to handle nested contexts a
 
 
 @contextlib.contextmanager
-def use_stage(stage: Usd.Stage) -> None:
+def use_stage(stage: Usd.Stage):
     """Context manager that sets a thread-local stage.
 
     Args:
@@ -94,7 +97,7 @@ def get_current_stage(fabric: bool = False) -> typing.Union[Usd.Stage, usdrt.Usd
                         sessionLayer=Sdf.Find('anon:0x7fba6c01c5c0:World7-session.usda'),
                         pathResolverContext=<invalid repr>)
     """
-    stage = getattr(_context, "stage", omni.usd.get_context().get_stage())
+    stage = getattr(_context, "stage", omni.usd.get_context().get_stage())  # type: ignore
     if fabric:
         stage_cache = UsdUtils.StageCache.Get()
         stage_id = stage_cache.GetId(stage).ToLongInt()
@@ -157,7 +160,7 @@ async def update_stage_async() -> None:
         ...
         >>> run_coroutine(task())
     """
-    await omni.kit.app.get_app().next_update_async()
+    await omni.kit.app.get_app().next_update_async()  # type: ignore
 
 
 # TODO: make a generic util for setting all layer properties
@@ -341,11 +344,13 @@ def add_reference_to_stage(usd_path: str, prim_path: str, prim_type: str = "Xfor
         )
         if ret_val["ret_val"]:
             try:
-                import omni.metrics.assembler.ui
-
-                payref = Sdf.Reference(usd_path)
-                omni.kit.commands.execute("AddReference", stage=stage, prim_path=prim.GetPath(), reference=payref)
-            except Exception as exc:
+                omni.kit.commands.execute(
+                    "AddReference",
+                    stage=stage,
+                    prim_path=prim.GetPath(),
+                    reference=Sdf.Reference(usd_path),
+                )
+            except Exception:
                 carb.log_warn(
                     f"The USD file {usd_path} used for a reference does have divergent units, please either enable omni.usd.metrics.assembler.ui or convert the file into right units."
                 )
@@ -377,7 +382,7 @@ def create_new_stage() -> Usd.Stage:
                         sessionLayer=Sdf.Find('anon:0x7fba6c01c5c0:World7-session.usda'),
                         pathResolverContext=<invalid repr>)
     """
-    return omni.usd.get_context().new_stage()
+    return omni.usd.get_context().new_stage()  # type: ignore
 
 
 def create_new_stage_in_memory() -> Usd.Stage:
@@ -416,8 +421,8 @@ async def create_new_stage_async() -> None:
         ...
         >>> run_coroutine(task())
     """
-    await omni.usd.get_context().new_stage_async()
-    await omni.kit.app.get_app().next_update_async()
+    await omni.usd.get_context().new_stage_async()  # type: ignore
+    await omni.kit.app.get_app().next_update_async()  # type: ignore
 
 
 def open_stage(usd_path: str) -> bool:
@@ -479,7 +484,7 @@ async def open_stage_async(usd_path: str) -> typing.Tuple[bool, int]:
         raise ValueError("Only USD files can be loaded with this method")
     usd_context = omni.usd.get_context()
     usd_context.disable_save_to_recent_files()
-    (result, error) = await omni.usd.get_context().open_stage_async(usd_path)
+    (result, error) = await omni.usd.get_context().open_stage_async(usd_path)  # type: ignore
     usd_context.enable_save_to_recent_files()
     return (result, error)
 
@@ -520,7 +525,7 @@ def save_stage(usd_path: str, save_and_reload_in_place=True) -> bool:
     return result
 
 
-def close_stage(callback_fn: typing.Callable = None) -> bool:
+def close_stage(callback_fn: typing.Callable | None = None) -> bool:
     """Closes the current opened USD stage.
 
     .. note::
@@ -584,17 +589,15 @@ def set_livesync_stage(usd_path: str, enable: bool) -> bool:
         True
     """
     # TODO: Check that the provided usd_path exists
-    # TODO: Check that the provided usd_path exists
     if save_stage(usd_path):
         if enable:
-            usd_path_split = usd_path.split("/")
-            live_session = layers.get_live_syncing().find_live_session_by_name(usd_path, "Default")
+            live_session = layers.get_live_syncing().find_live_session_by_name(usd_path, "Default")  # type: ignore
             if live_session is None:
-                live_session = layers.get_live_syncing().create_live_session(name="Default")
-            result = layers.get_live_syncing().join_live_session(live_session)
+                live_session = layers.get_live_syncing().create_live_session(name="Default")  # type: ignore
+            layers.get_live_syncing().join_live_session(live_session)  # type: ignore
             return True
         else:
-            layers.get_live_syncing().stop_live_session(usd_path)
+            layers.get_live_syncing().stop_live_session(usd_path)  # type: ignore
             return True
     else:
         return False
@@ -722,7 +725,7 @@ def get_stage_units() -> float:
     return UsdGeom.GetStageMetersPerUnit(get_current_stage())
 
 
-def get_next_free_path(path: str, parent: str = None) -> str:
+def get_next_free_path(path: str, parent: str | None = None) -> str:
     """Returns the next free usd path for the current stage
 
     Args:
@@ -747,9 +750,9 @@ def get_next_free_path(path: str, parent: str = None) -> str:
         # remove trailing slash from parent and leading slash from path
         path = omni.usd.get_stage_next_free_path(
             get_current_stage(), parent.rstrip("/") + "/" + path.lstrip("/"), False
-        )
+        )  # type: ignore
     else:
-        path = omni.usd.get_stage_next_free_path(get_current_stage(), path, True)
+        path = omni.usd.get_stage_next_free_path(get_current_stage(), path, True)  # type: ignore
     return path
 
 
