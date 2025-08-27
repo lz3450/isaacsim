@@ -562,7 +562,6 @@ class PhysicsContext(object):
     def _step(self, current_time: float) -> None:
         self._physx_sim_interface.simulate(self.get_physics_dt(), current_time)
         self._physx_sim_interface.fetch_results()
-        return
 
     def set_invert_collision_group_filter(self, invert_collision_group_filter: bool) -> None:
         """[summary]
@@ -579,7 +578,6 @@ class PhysicsContext(object):
             self._physx_scene_api.CreateInvertCollisionGroupFilterAttr(invert_collision_group_filter)
         else:
             self._physx_scene_api.GetInvertCollisionGroupFilterAttr().Set(invert_collision_group_filter)
-        return
 
     def get_invert_collision_group_filter(self) -> int:
         """[summary]
@@ -609,7 +607,6 @@ class PhysicsContext(object):
             self._physx_scene_api.CreateBounceThresholdAttr(value)
         else:
             self._physx_scene_api.GetBounceThresholdAttr().Set(value)
-        return
 
     def get_bounce_threshold(self) -> float:
         """[summary]
