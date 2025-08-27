@@ -32,7 +32,7 @@ exts."isaacsim.code_editor.jupyter".host = "127.0.0.1"
 exts."isaacsim.code_editor.jupyter".port = 8227
 # Whether to kill applications/processes that use the same ports before enabling the extension.
 # Disable this option if you want to launch multiple applications with this extension enabled.
-exts."isaacsim.code_editor.jupyter".kill_processes_with_port_in_use = false
+exts."isaacsim.code_editor.jupyter".kill_processes_with_port_in_use = true
 
 # jupyter notebook settings
 
@@ -41,9 +41,9 @@ exts."isaacsim.code_editor.jupyter".notebook_ip = "127.0.0.1"
 # Port number where the Jupyter server is being started.
 exts."isaacsim.code_editor.jupyter".notebook_port = 8228
 # Jupyter server token for token-based authentication. If empty, the server will start without authentication.
-exts."isaacsim.code_editor.jupyter".notebook_token = ""
+exts."isaacsim.code_editor.jupyter".notebook_token = "roboguard"
 # The directory to use for notebooks. If empty, the directory is ``data/notebooks`` within the extension tree.
-exts."isaacsim.code_editor.jupyter".notebook_dir = ""
+exts."isaacsim.code_editor.jupyter".notebook_dir = "../../../../roboguard/notebooks"
 # Jupyter server command line options other than ``--ip``, ``--port``, ``--token`` and ``--notebook-dir``.
 exts."isaacsim.code_editor.jupyter".command_line_options = "--allow-root --no-browser --JupyterApp.answer_yes=True"
 

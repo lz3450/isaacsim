@@ -87,15 +87,14 @@ def main(ip: str = "127.0.0.1", port: int = 8228, argv: List[str] = []) -> None:
 
 
 if __name__ == "__main__":
-
     argv = sys.argv[1:]
 
     # testing the launcher
-    if not len(argv):
+    if not argv:
         print("Testing the launcher")
         argv = [
-            "127.0.0.1",  # ip
-            "8888",  # port
+            "127.0.0.1",
+            "8888",
             "",  # token
             "",  # notebook_dir
             "--allow-root --no-browser",
@@ -109,10 +108,12 @@ if __name__ == "__main__":
     # get notebook_dir
     if not argv[3]:
         notebook_dir = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "notebooks"))
-        notebook_dir = "--notebook-dir={}".format(notebook_dir)
+        notebook_dir = f"--notebook-dir={notebook_dir}"
+    else:
+        notebook_dir = f"--notebook-dir={argv[3]}"
 
     # get token
-    token = "--ServerApp.token={}".format(token)
+    token = f"--ServerApp.token={token}"
 
     # assets path
     app_dir = []
@@ -124,19 +125,19 @@ if __name__ == "__main__":
             app_dir = ["--app-dir={}".format(os.path.join(p, "jupyterlab"))]
         if app_dir:
             break
-    print("app_dir: {}".format(app_dir))
+    print(f"app_dir: {app_dir}")
 
     # clean up the argv
     argv = app_dir + [token] + [notebook_dir] + argv[4].split(" ")
 
     # run the launcher
-    print("Starting Jupyter Lab at {}:{}".format(ip, port))
-    print(" with argv: {}".format(" ".join(argv)))
+    print(f"Starting Jupyter Lab at {ip}:{port}")
+    print(f" with argv: {' '.join(argv)}")
 
     main(ip=ip, port=port, argv=argv)
 
     # delete notebook.txt
     try:
         os.remove(os.path.join(SCRIPT_DIR, "notebook.txt"))
-    except:
+    except Exception:
         pass
