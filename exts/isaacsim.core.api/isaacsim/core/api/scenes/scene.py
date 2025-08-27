@@ -108,7 +108,7 @@ class Scene(object):
     def bbox_cache(self):
         return self._bbox_cache
 
-    def add(self, obj: SingleXFormPrim) -> SingleXFormPrim:
+    def add(self, obj):
         """Add an object to the scene registry
 
         Args:
@@ -219,9 +219,9 @@ class Scene(object):
             >>> scene.add_ground_plane()
             <isaacsim.core.api.objects.ground_plane.GroundPlane object at 0x...>
         """
-        if Scene.object_exists(self, name=name):
+        if self.object_exists(name=name):
             carb.log_info("ground floor already created with name {}.".format(name))
-            return Scene.get_object(self, name=name)
+            return self.get_object(name=name)  # type: ignore
         physics_material_path = find_unique_string_name(
             initial_name="/World/Physics_Materials/physics_material", is_unique_fn=lambda x: not is_prim_path_valid(x)
         )
@@ -239,7 +239,7 @@ class Scene(object):
             color=color,
             physics_material=physics_material,
         )
-        Scene.add(self, plane)
+        self.add(plane)
         return plane
 
     def add_default_ground_plane(
@@ -274,12 +274,13 @@ class Scene(object):
             server...
             <isaacsim.core.api.objects.ground_plane.GroundPlane object at 0x...>
         """
-        if Scene.object_exists(self, name=name):
+        if self.object_exists(name=name):
             carb.log_info("ground floor already created with name {}.".format(name))
-            return Scene.get_object(self, name=name)
+            return self.get_object(name=name)  # type: ignore
         assets_root_path = get_assets_root_path()
         if assets_root_path is None:
             carb.log_error("Could not find Isaac Sim assets folder")
+            raise Exception("Could not find Isaac Sim assets folder")
         usd_path = assets_root_path + "/Isaac/Environments/Grid/default_environment.usd"
         add_reference_to_stage(usd_path=usd_path, prim_path=prim_path)
         physics_material_path = find_unique_string_name(
@@ -292,7 +293,7 @@ class Scene(object):
             restitution=restitution,
         )
         plane = GroundPlane(prim_path=prim_path, name=name, z_position=z_position, physics_material=physics_material)
-        Scene.add(self, plane)
+        self.add(plane)
         return plane
 
     def post_reset(self) -> None:
@@ -326,14 +327,14 @@ class Scene(object):
             self._scene_registry._deformable_material_views,
         ]
 
-        for prim_registery in prim_registries_available:
-            for prim_name in list(prim_registery):
-                if not prim_registery[prim_name].is_valid():
-                    prim_object = prim_registery[prim_name]
+        for prim_registry in prim_registries_available:
+            for prim_name in list(prim_registry):
+                if not prim_registry[prim_name].is_valid():
+                    prim_object = prim_registry[prim_name]
                     self._scene_registry.remove_object(name=prim_name)
                     del prim_object
                 else:
-                    prim_registery[prim_name].post_reset()
+                    prim_registry[prim_name].post_reset()
         if self._bbox_cache is not None:
             self._bbox_cache.Clear()
         gc.collect()
@@ -423,13 +424,13 @@ class Scene(object):
                 if is_prim_path_valid(prim_path) and not is_prim_ancestral(prim_path):
                     omni.usd.commands.DeletePrimsCommand([get_prim_path(current_prim)]).do()
             # update the stage
-            if builtins.ISAAC_LAUNCHED_FROM_TERMINAL is False:
+            if builtins.ISAAC_LAUNCHED_FROM_TERMINAL is False:  # type: ignore
                 update_stage()
         self._scene_registry.remove_object(name=name)
         del prim_object
         return
 
-    def get_object(self, name: str) -> SingleXFormPrim:
+    def get_object(self, name: str):
         """Get a registered object by its name if exists otherwise None
 
         .. note::
@@ -598,4 +599,3 @@ class Scene(object):
             >>> scene.disable_bounding_boxes_computations()
         """
         self._bbox_cache = None
-        return
