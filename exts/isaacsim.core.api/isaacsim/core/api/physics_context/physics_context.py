@@ -12,9 +12,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import List, Optional, Tuple
+from typing import Optional
 
 import carb
+import carb.settings
 import omni
 from isaacsim.core.simulation_manager import SimulationManager
 from isaacsim.core.utils.carb import get_carb_setting, set_carb_setting
@@ -54,7 +55,7 @@ class PhysicsContext(object):
         self,
         physics_dt: Optional[float] = None,
         prim_path: str = "/physicsScene",
-        sim_params: dict = None,
+        sim_params: dict | None = None,
         set_defaults: bool = True,
     ) -> None:
         self._prim_path = prim_path
@@ -509,14 +510,14 @@ class PhysicsContext(object):
             self._physics_scene.GetGravityMagnitudeAttr().Set(magnitude)
         return
 
-    def get_gravity(self) -> Tuple[List, float]:
+    def get_gravity(self) -> tuple[list, float]:
         """Gets current gravity.
 
         Raises:
             Exception: If the prim path registered in context doesn't correspond to a valid prim path currently.
 
         Returns:
-            Tuple[list, float]: returns a tuple, first element corresponds to the gravity direction vector and second element is the magnitude.
+            tuple[list, float]: returns a tuple, first element corresponds to the gravity direction vector and second element is the magnitude.
         """
         if not is_prim_path_valid(self._prim_path):
             raise Exception("The Physics Context's physics scene path is invalid, you need to reinit Physics Context")
@@ -546,11 +547,11 @@ class PhysicsContext(object):
             set_carb_setting(self._carb_settings, "/physics/outputVelocitiesLocalSpace", output_velocities_local_space)
         return
 
-    def get_physx_update_transformations_settings(self) -> Tuple[bool, bool, bool, bool]:
+    def get_physx_update_transformations_settings(self) -> tuple[bool, bool, bool]:
         """Gets how physx syncs with the usd when transformations are updated.
 
         Returns:
-            Tuple[bool, bool, bool, bool]: [update_to_usd, update_velocities_to_usd, output_velocities_local_space]
+            tuple[bool, bool, bool]: [update_to_usd, update_velocities_to_usd, output_velocities_local_space]
         """
         return (
             get_carb_setting(self._carb_settings, "/physics/updateToUsd"),
