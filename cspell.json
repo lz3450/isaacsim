@@ -19,8 +19,10 @@
         "kernelspec",
         "labapp",
         "libcarb",
+        "livesync",
         "nbconvert",
         "Omniverse",
+        "Persp",
         "physx",
         "pipapi",
         "prebundle",
@@ -31,7 +33,9 @@
         "serverapp",
         "uiapp",
         "urdf",
-        "viewports"
+        "usdrt",
+        "viewports",
+        "xform"
     ],
     "ignoreWords": [],
     "import": []

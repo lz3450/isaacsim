@@ -35,6 +35,13 @@
 !exts/isaacsim.core.api/isaacsim/core/api/world
 !exts/isaacsim.core.api/isaacsim/core/api/world/world.py
 
+## core utils
+!exts/isaacsim.core.utils
+!exts/isaacsim.core.utils/isaacsim
+!exts/isaacsim.core.utils/isaacsim/core
+!exts/isaacsim.core.utils/isaacsim/core/utils
+!exts/isaacsim.core.utils/isaacsim/core/utils/stage.py
+
 ## jupyter
 !exts/isaacsim.code_editor.jupyter
 !exts/isaacsim.code_editor.jupyter/config
