@@ -39,3 +39,6 @@
 !exts/isaacsim.code_editor.jupyter
 !exts/isaacsim.code_editor.jupyter/config
 !exts/isaacsim.code_editor.jupyter/config/extension.toml
+!exts/isaacsim.code_editor.jupyter/data
+!exts/isaacsim.code_editor.jupyter/data/launchers
+!exts/isaacsim.code_editor.jupyter/data/launchers/jupyter_launcher.py
