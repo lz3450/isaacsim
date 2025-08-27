@@ -28,8 +28,8 @@ export PYTHONPATH="$PYTHONPATH:$SCRIPT_DIR/kit/python/lib/python3.11:$SCRIPT_DIR
 
 PYTHONEXE=${SCRIPT_DIR}/kit/python/bin/python3
 
-"$PYTHONEXE" -m pip wheel --wheel-dir "$ISAAC_PATH/wheels" --no-binary :all: --only-binary jupyterlab_pygments jupyter
-"$PYTHONEXE" -m pip install --user -U --no-index --find-links "$ISAAC_PATH/wheels" jupyter
+"$PYTHONEXE" -m pip wheel --wheel-dir "$ISAAC_PATH/wheels" --no-binary :all: --only-binary jupyterlab_pygments pip wheel jupyter
+"$PYTHONEXE" -m pip install --user -U --no-index --find-links "$ISAAC_PATH/wheels" pip wheel jupyter
 
 # Configure kernelspec based on current `python` path
 KERNEL_DIR=$(mktemp -d)
