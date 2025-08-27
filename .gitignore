@@ -28,6 +28,8 @@
 
 !exts/isaacsim.core.api/isaacsim/core/api/loggers
 !exts/isaacsim.core.api/isaacsim/core/api/loggers/data_logger.py
+!exts/isaacsim.core.api/isaacsim/core/api/physics_context
+!exts/isaacsim.core.api/isaacsim/core/api/physics_context/physics_context.py
 !exts/isaacsim.core.api/isaacsim/core/api/scenes/
 !exts/isaacsim.core.api/isaacsim/core/api/scenes/scene.py
 !exts/isaacsim.core.api/isaacsim/core/api/simulation_context
@@ -41,6 +43,7 @@
 !exts/isaacsim.core.utils/isaacsim/core
 !exts/isaacsim.core.utils/isaacsim/core/utils
 !exts/isaacsim.core.utils/isaacsim/core/utils/stage.py
+
 
 ## jupyter
 !exts/isaacsim.code_editor.jupyter
