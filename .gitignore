@@ -1,12 +1,12 @@
 *
 
-# helper files
+### helper files
 !/.gitignore
 !/.vscode
 !/.vscode/*
 !/cspell.json
 
-# root dir scripts
+### root dir scripts
 !/python.sh
 !/jupyter_notebook.sh
 !/setup.sh
@@ -14,9 +14,13 @@
 !/roboguard
 !/roboguard/tests
 !/roboguard/tests/*
+!/roboguard/tasks
+!/roboguard/tasks/*
 
-# core api
+### core api
 !exts
+
+## core api
 !exts/isaacsim.core.api
 !exts/isaacsim.core.api/isaacsim
 !exts/isaacsim.core.api/isaacsim/core
@@ -30,3 +34,8 @@
 !exts/isaacsim.core.api/isaacsim/core/api/simulation_context/simulation_context.py
 !exts/isaacsim.core.api/isaacsim/core/api/world
 !exts/isaacsim.core.api/isaacsim/core/api/world/world.py
+
+## jupyter
+!exts/isaacsim.code_editor.jupyter
+!exts/isaacsim.code_editor.jupyter/config
+!exts/isaacsim.code_editor.jupyter/config/extension.toml
