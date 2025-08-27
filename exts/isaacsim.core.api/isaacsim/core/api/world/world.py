@@ -330,7 +330,7 @@ class World(SimulationContext):
 
             >>> world.initialize_physics()
         """
-        SimulationContext.initialize_physics(self)
+        super().initialize_physics()
         self._scene._finalize(self.physics_sim_view)
         return
 
@@ -372,7 +372,7 @@ class World(SimulationContext):
             self.stop()
         for task in self._current_tasks.values():
             task.cleanup()
-        SimulationContext.reset(self, soft=soft)
+        super().reset(soft=soft)
         self._scene._finalize(self.physics_sim_view)
         self.scene.post_reset()
         for task in self._current_tasks.values():
@@ -521,7 +521,7 @@ class World(SimulationContext):
             self.scene.bbox_cache.SetTime(Usd.TimeCode(self._current_time))
 
         if step_sim:
-            SimulationContext.step(self, render=render)
+            super().step(render=render)
         if self._data_logger.is_started():
             if self._data_logger.data_frame_logging_func is None:
                 raise Exception("You need to add data logging function before starting the data logger")
