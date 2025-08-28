@@ -111,7 +111,7 @@ class SimulationContext:
             return
         SimulationContext._sim_context_initialized = True
         self._app = omni.kit.app.get_app_interface()
-        self._extension_manager = omni.kit.app.get_app().get_extension_manager()
+        self._extension_manager = self._app.get_extension_manager()
         self._framework = carb.get_framework()
         self._initial_stage_units_in_meters = stage_units_in_meters
         self._initial_physics_dt = physics_dt
@@ -287,7 +287,7 @@ class SimulationContext:
                            pathResolverContext=<invalid repr>)
         """
         if self._stage is None:
-            return get_current_stage()
+            self._stage = get_current_stage()
         return self._stage
 
     @property
@@ -368,11 +368,9 @@ class SimulationContext:
         """
         return SimulationManager.get_physics_sim_view()
 
-    """
-    Operations - Physics.
-    """
-
-    def get_physics_context(self) -> PhysicsContext:
+    ### Operations - Physics.
+    @property
+    def physics_context(self) -> PhysicsContext:
         """Get the physics context (a class to deal with a physics scene and its settings) instance
 
         Raises:
@@ -388,8 +386,6 @@ class SimulationContext:
             >>> simulation_context.get_physics_context()
             <isaacsim.core.api.physics_context.physics_context.PhysicsContext object at 0x...>
         """
-        if self.stage is None:
-            raise Exception("There is no stage currently opened")
         if self._physics_context is None:
             raise Exception("Physics context is not initialized")
         return self._physics_context
@@ -417,13 +413,9 @@ class SimulationContext:
             >>> set physics dt to 120 Hz and rendering dt to 60Hz (2 physics steps for each rendering)
             >>> simulation_context.set_simulation_dt(physics_dt=1.0 / 120.0, rendering_dt=1.0 / 60.0)
         """
-        if self.stage is None:
-            raise Exception("There is no stage currently opened, init_stage needed before calling this func")
-        if self._physics_context is None:
-            raise Exception("Physics context is not initialized")
         # If the user sets none we assume they don't care and want to use defaults (1.0/60.0)
         if rendering_dt is None:
-            rendering_dt = self.get_rendering_dt()
+            rendering_dt = self.rendering_dt
         elif rendering_dt < 0:
             raise ValueError("rendering_dt cannot be <0")
         # if rendering is called the substeps term is used to determine how many physics steps to perform per rendering step
@@ -433,7 +425,7 @@ class SimulationContext:
                 substeps = max(int(rendering_dt / physics_dt), 1)
             else:
                 substeps = 1
-            self._physics_context.set_physics_dt(physics_dt, substeps)
+            self.physics_context.set_physics_dt(physics_dt, substeps)
 
         rendering_hz = 0
         if rendering_dt > 0:
@@ -462,33 +454,11 @@ class SimulationContext:
             set_carb_setting(self._settings, "/app/runLoops/main/rateLimitEnabled", True)
             set_carb_setting(self._settings, "/app/runLoops/main/rateLimitFrequency", rendering_hz)
             self._timeline.set_target_framerate(rendering_hz)
-            pass
 
-        return
 
-    def get_physics_dt(self) -> float:
-        """Get the current physics dt of the physics context
 
-        Raises:
-            Exception: if there is no stage currently opened
-
-        Returns:
-            float: current physics dt of the PhysicsContext
-
-        Example:
-
-        .. code-block:: python
-
-            >>> simulation_context.get_physics_dt()
-            0.016666666666666666
-        """
-        if self.stage is None:
-            raise Exception("There is no stage currently opened")
-        if self._physics_context is None:
-            raise Exception("Physics context is not initialized")
-        return self._physics_context.get_physics_dt()
-
-    def get_rendering_dt(self) -> float:
+    @property
+    def rendering_dt(self) -> float:
         """Get the current rendering dt
 
         Raises:
@@ -504,9 +474,6 @@ class SimulationContext:
             >>> simulation_context.get_rendering_dt()
             0.016666666666666666
         """
-        if self.stage is None:
-            raise Exception("There is no stage currently opened")
-
         # Helper function to get dt from frequency
         def _get_dt_from_frequency():
             frequency = get_carb_setting(self._settings, "/app/runLoops/main/rateLimitFrequency")
@@ -584,7 +551,7 @@ class SimulationContext:
         """
         if self.is_playing():
             await self.stop_async()
-        await omni.kit.app.get_app().next_update_async()
+        await self._app.next_update_async()  # type: ignore
         await self._initialize_stage_async(
             physics_dt=self._initial_physics_dt,
             rendering_dt=self._initial_rendering_dt,
@@ -593,15 +560,15 @@ class SimulationContext:
             sim_params=self._sim_params,
             device=self._device,
         )
-        await omni.kit.app.get_app().next_update_async()
+        await self._app.next_update_async()  # type: ignore
         self._stage_open_callback = carb.eventdispatcher.get_eventdispatcher().observe_event(
             event_name=omni.usd.get_context().stage_event_name(omni.usd.StageEventType.OPENED),
             on_event=self._stage_open_callback_fn,
             observer_name="isaacsim.core.api.SimulationContext._stage_open_callback",
         )
-        await omni.kit.app.get_app().next_update_async()
+        await self._app.next_update_async()  # type: ignore
         self._setup_default_callback_fns()
-        await omni.kit.app.get_app().next_update_async()
+        await self._app.next_update_async()  # type: ignore
         return
 
     def initialize_physics(self) -> None:
@@ -613,7 +580,7 @@ class SimulationContext:
 
             >>> simulation_context.initialize_physics()
         """
-        if self.is_stopped() and not builtins.ISAAC_LAUNCHED_FROM_TERMINAL:
+        if self.is_stopped() and not builtins.ISAAC_LAUNCHED_FROM_TERMINAL:  # type: ignore
             self.play()
         if SimulationManager.get_physics_sim_view() is None:
             SimulationManager.initialize_physics()
@@ -689,25 +656,20 @@ class SimulationContext:
 
             >>> simulation_context.step()
         """
-        if self.stage is None:
-            raise Exception("There is no stage currently opened, init_stage needed before calling this func")
-        if self._physics_context is None:
-            raise Exception("Physics context is not initialized")
         if render:
             # physics dt is zero, no need to step physics, just render
-            if self.get_physics_dt() == 0:
+            if self.physics_context.get_physics_dt() == 0:
                 self.render()
             # rendering dt is zero, but physics is not, call step and then render
-            elif self.get_rendering_dt() == 0 and self.get_physics_dt() != 0:
+            elif self.rendering_dt == 0 and self.physics_context.get_physics_dt() != 0:
                 if self.is_playing():
-                    self._physics_context._step(current_time=self.current_time)
+                    self.physics_context._step(current_time=self.current_time)
                 self.render()
             else:
                 self._app.update()
         else:
             if self.is_playing():
-                self._physics_context._step(current_time=self.current_time)
-        return
+                self.physics_context._step(current_time=self.current_time)
 
     def render(self) -> None:
         """Refresh the Isaac Sim app rendering components including UI elements, viewports and others
@@ -735,8 +697,8 @@ class SimulationContext:
                 from omni.physxfabric import get_physx_fabric_interface
 
                 self._physx_fabric_interface = get_physx_fabric_interface()
-        if self._physx_fabric_interface and self._physics_context is not None:
-            self._physx_fabric_interface.force_update(self._physics_context.get_physics_dt(), self.current_time)
+        if self._physx_fabric_interface:
+            self._physx_fabric_interface.force_update(self.physics_context.get_physics_dt(), self.current_time)
         set_carb_setting(self._settings, "/app/player/playSimulations", False)
         self._app.update()
         set_carb_setting(self._settings, "/app/player/playSimulations", True)
@@ -774,9 +736,9 @@ class SimulationContext:
 
                 self._physx_fabric_interface = get_physx_fabric_interface()
         if self._physx_fabric_interface:
-            self._physx_fabric_interface.force_update(self._physics_context.get_physics_dt(), self.current_time)
+            self._physx_fabric_interface.force_update(self.physics_context.get_physics_dt(), self.current_time)
         set_carb_setting(self._settings, "/app/player/playSimulations", False)
-        await omni.kit.app.get_app().next_update_async()
+        await self._app.next_update_async()  # type: ignore
         set_carb_setting(self._settings, "/app/player/playSimulations", True)
 
     def clear(self) -> None:
@@ -885,9 +847,9 @@ class SimulationContext:
         """
         self._timeline.play()
         self._timeline.commit()
-        self.get_physics_context().warm_start()
+        self.physics_context.warm_start()
         set_carb_setting(self._settings, "/app/player/playSimulations", False)
-        await omni.kit.app.get_app().next_update_async()
+        await self._app.next_update_async()  # type: ignore
         set_carb_setting(self._settings, "/app/player/playSimulations", True)
         return
 
@@ -928,7 +890,7 @@ class SimulationContext:
         """
         self._timeline.pause()
         set_carb_setting(self._settings, "/app/player/playSimulations", False)
-        await omni.kit.app.get_app().next_update_async()
+        await self._app.next_update_async()  # type: ignore
         set_carb_setting(self._settings, "/app/player/playSimulations", True)
         return
 
@@ -964,7 +926,7 @@ class SimulationContext:
         """
         self._timeline.stop()
         set_carb_setting(self._settings, "/app/player/playSimulations", False)
-        await omni.kit.app.get_app().next_update_async()
+        await self._app.next_update_async()  # type: ignore
         set_carb_setting(self._settings, "/app/player/playSimulations", True)
         return
 
@@ -1009,13 +971,10 @@ class SimulationContext:
         if callback_name in self._physics_callback_functions:
             carb.log_error(f"Physics callback `{callback_name}` already exists")
             return
-        if self._physics_context is None:
-            raise Exception("Physics context is not initialized")
         self._physics_callback_functions[callback_name] = (
-            self._physics_context._physx_interface.subscribe_physics_step_events(callback_fn)
+            self.physics_context._physx_interface.subscribe_physics_step_events(callback_fn)
         )
         self._physics_functions[callback_name] = callback_fn
-        return
 
     def remove_physics_callback(self, callback_name: str) -> None:
         """Remove a physics callback by its name
@@ -1035,7 +994,6 @@ class SimulationContext:
             del self._physics_functions[callback_name]
         else:
             carb.log_error(f"Physics callback `{callback_name}` doesn't exist")
-        return
 
     def physics_callback_exists(self, callback_name: str) -> bool:
         """Check if a physics callback exists
@@ -1345,8 +1303,8 @@ class SimulationContext:
         set_defaults: bool = True,
         backend: str = "numpy",
         device: Optional[str] = None,
-    ) -> Usd.Stage:
-        if self.stage is None:
+    ):
+        if get_current_stage() is None:
             create_new_stage()
             self.render()
 
@@ -1364,7 +1322,6 @@ class SimulationContext:
             if device is not None:
                 SimulationManager.set_physics_sim_device(device)
             self.set_simulation_dt(physics_dt=physics_dt, rendering_dt=rendering_dt)
-        return self.stage
 
     async def _initialize_stage_async(
         self,
@@ -1375,25 +1332,22 @@ class SimulationContext:
         sim_params: dict | None = None,
         set_defaults: bool = True,
         device: Optional[str] = None,
-    ) -> Usd.Stage:
+    ):
         if get_current_stage() is None:
             await create_new_stage_async()
         set_stage_up_axis("z")
         if stage_units_in_meters is not None:
             set_stage_units(stage_units_in_meters=stage_units_in_meters)
-        await omni.kit.app.get_app().next_update_async()
+        await self._app.next_update_async()  # type: ignore
         self._physics_context = PhysicsContext(
             physics_dt=physics_dt, prim_path=physics_prim_path, sim_params=sim_params, set_defaults=set_defaults
         )
         if device is not None:
             SimulationManager.set_physics_sim_device(device)
         self.set_simulation_dt(physics_dt=physics_dt, rendering_dt=rendering_dt)
-        return self.stage
 
     def _setup_default_callback_fns(self):
-        if self._physics_context is None:
-            raise Exception("Physics context is not initialized")
-        self._physics_timer_callback = self._physics_context._physx_interface.subscribe_physics_step_events(
+        self._physics_timer_callback = self.physics_context._physx_interface.subscribe_physics_step_events(
             self._physics_timer_callback_fn
         )
         self._event_timer_callback = self._timeline.get_timeline_event_stream().create_subscription_to_pop_by_type(
@@ -1445,9 +1399,7 @@ class SimulationContext:
         self._stage_open_callback = None
 
     def _on_post_physics_ready(self, event):
-        if self._physics_context is None:
-            raise Exception("Physics context is not initialized")
         for callback_name, callback_function in self._physics_functions.items():
             self._physics_callback_functions[callback_name] = (
-                self._physics_context._physx_interface.subscribe_physics_step_events(callback_function)
+                self.physics_context._physx_interface.subscribe_physics_step_events(callback_function)
             )
