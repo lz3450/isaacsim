@@ -16,11 +16,11 @@ import numpy as np
 
 ###
 import carb
-import omni.kit.commands
 import omni.graph.core as og
 from pxr import Gf
 import usdrt.Sdf
 from isaacsim.core.version import get_version
+from isaacsim.core.api import SimulationContext
 from isaacsim.core.utils.extensions import enable_extension
 from isaacsim.storage.native import get_assets_root_path
 from isaacsim.core.utils.viewports import set_camera_view
@@ -46,6 +46,11 @@ print("Isaac Sim version: ", get_version())
 for extension in EXTENSIONS:
     enable_extension(extension)
 
+simulation_app.update()
+
+###
+simulation_context = SimulationContext(stage_units_in_meters=1.0)
+
 ###
 assets_root_path = get_assets_root_path()
 if assets_root_path is None:
@@ -54,12 +59,16 @@ if assets_root_path is None:
     sys.exit(1)
 print("Assets root path: ", assets_root_path)
 
-set_camera_view(eye=[1.20, 1.20, 0.80], target=[0, 0, 0.50], camera_prim_path="/OmniverseKit_Persp")
+set_camera_view(eye=[1.2, 1.2, 0.8], target=[0, 0, 0.5], camera_prim_path="/OmniverseKit_Persp")
 
 franka = add_reference_to_stage(
     usd_path=assets_root_path + "/Isaac/Robots/FrankaRobotics/FrankaPanda/franka.usd",
     prim_path=FRANKA_STAGE_PATH,
 )
+# Set variant selections for the Franka robot
+franka.GetVariantSet("Gripper").SetVariantSelection("AlternateFinger")
+franka.GetVariantSet("Mesh").SetVariantSelection("Quality")
+
 franka_xform = XFormPrim(
     prim_paths_expr=franka.GetName(),
     positions=np.array([0, -0.64, 0]).reshape(1, 3),
@@ -78,6 +87,8 @@ cracker_box_xform = XFormPrim(
     positions=np.array([-0.2, -0.25, 0.1]).reshape(1, 3),
     orientations=gf_rotation_to_np_array(Gf.Rotation(Gf.Vec3d(1, 0, 0), -90)).reshape(1, 4),
 )
+
+simulation_app.update()
 
 ###
 og.Controller.edit(
@@ -116,9 +127,12 @@ og.Controller.edit(
     },
 )
 
-###
-while simulation_app.is_running():
-    simulation_app.update()
+simulation_app.update()
 
 ###
+while simulation_app.is_running():
+    simulation_context.step(render=True)
+
+###
+simulation_context.stop()
 simulation_app.close()
