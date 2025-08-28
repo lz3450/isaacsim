@@ -16,7 +16,7 @@
 import sys
 
 import numpy as np
-from isaacsim import SimulationApp
+from isaacsim.simulation_app import SimulationApp
 
 FRANKA_STAGE_PATH = "/Franka"
 FRANKA_USD_PATH = "/Isaac/Robots/FrankaRobotics/FrankaPanda/franka.usd"
@@ -60,8 +60,8 @@ stage.add_reference_to_stage(assets_root_path + BACKGROUND_USD_PATH, BACKGROUND_
 robot = prims.create_prim(
     FRANKA_STAGE_PATH,
     "Xform",
-    position=np.array([0, -0.64, 0]),
-    orientation=rotations.gf_rotation_to_np_array(Gf.Rotation(Gf.Vec3d(0, 0, 1), 90)),
+    position=np.array([0, -0.64, 0]).tolist(),
+    orientation=rotations.gf_rotation_to_np_array(Gf.Rotation(Gf.Vec3d(0, 0, 1), 90)).tolist(),
     usd_path=assets_root_path + FRANKA_USD_PATH,
 )
 
@@ -96,14 +96,8 @@ try:
                 ("ReadSimTime.outputs:simulationTime", "PublishJointState.inputs:timeStamp"),
                 ("ReadSimTime.outputs:simulationTime", "PublishClock.inputs:timeStamp"),
                 ("SubscribeJointState.outputs:jointNames", "ArticulationController.inputs:jointNames"),
-                (
-                    "SubscribeJointState.outputs:positionCommand",
-                    "ArticulationController.inputs:positionCommand",
-                ),
-                (
-                    "SubscribeJointState.outputs:velocityCommand",
-                    "ArticulationController.inputs:velocityCommand",
-                ),
+                ("SubscribeJointState.outputs:positionCommand", "ArticulationController.inputs:positionCommand"),
+                ("SubscribeJointState.outputs:velocityCommand", "ArticulationController.inputs:velocityCommand"),
                 ("SubscribeJointState.outputs:effortCommand", "ArticulationController.inputs:effortCommand"),
             ],
             og.Controller.Keys.SET_VALUES: [
@@ -126,7 +120,6 @@ simulation_context.initialize_physics()
 simulation_context.play()
 
 while simulation_app.is_running():
-
     # Run with a fixed step size
     simulation_context.step(render=True)
 
