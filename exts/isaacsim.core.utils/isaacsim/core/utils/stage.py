@@ -77,14 +77,14 @@ def use_stage(stage: Usd.Stage):
             _context.stage = previous_stage
 
 
-def get_current_stage(fabric: bool = False) -> typing.Union[Usd.Stage, usdrt.Usd._Usd.Stage]:
+def get_current_stage(fabric: bool = False) -> Usd.Stage:
     """Get the current open USD or Fabric stage
 
     Args:
         fabric (bool, optional): True to get the fabric stage. False to get the USD stage. Defaults to False.
 
     Returns:
-        typing.Union[Usd.Stage, usdrt.Usd._Usd.Stage]: The USD or Fabric stage as specified by the input arg fabric.
+        Usd.Stage: The USD or Fabric stage as specified by the input arg fabric.
 
     Example:
 
@@ -263,7 +263,7 @@ def clear_stage(predicate: typing.Optional[typing.Callable[[str], bool]] = None)
         prim_paths_to_delete = [get_prim_path(prim) for prim in prims]
         DeletePrimsCommand(prim_paths_to_delete).do()
 
-    if builtins.ISAAC_LAUNCHED_FROM_TERMINAL is False:
+    if builtins.ISAAC_LAUNCHED_FROM_TERMINAL is False:  # type: ignore
         omni.kit.app.get_app_interface().update()
 
 
