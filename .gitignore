@@ -52,3 +52,9 @@
 !exts/isaacsim.code_editor.jupyter/data
 !exts/isaacsim.code_editor.jupyter/data/launchers
 !exts/isaacsim.code_editor.jupyter/data/launchers/jupyter_launcher.py
+
+### standalone examples
+!standalone_examples
+!standalone_examples/api
+!standalone_examples/api/isaacsim.ros2.bridge
+!standalone_examples/api/isaacsim.ros2.bridge/moveit.py
