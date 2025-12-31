@@ -650,4 +650,5 @@
     "ruff.lint.ignore": [
         "E402",
     ],
+    "cmake.ignoreCMakeListsMissing": true,
 }
