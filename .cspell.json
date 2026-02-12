@@ -1,0 +1,18 @@
+{
+    "version": "0.2",
+    "ignorePaths": [],
+    "dictionaryDefinitions": [
+        {
+            "name": "isaacsim",
+            "path": ".isaacsim.txt"
+        }
+    ],
+    "dictionaries": [
+        "isaacsim"
+    ],
+    "words": [],
+    "ignoreWords": [],
+    "import": [
+        "~/.config/cspell.json"
+    ]
+}

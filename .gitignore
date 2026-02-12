@@ -1,0 +1,53 @@
+*
+
+### helper files
+!/.vscode
+!/.vscode/*
+!/.gitignore
+!/.cspell.json
+!/.isaacsim.txt
+
+### root dir scripts
+!/*.sh
+
+### core api
+!exts
+
+## core api
+!exts/isaacsim.core.api
+!exts/isaacsim.core.api/isaacsim
+!exts/isaacsim.core.api/isaacsim/core
+!exts/isaacsim.core.api/isaacsim/core/api
+
+!exts/isaacsim.core.api/isaacsim/core/api/loggers
+!exts/isaacsim.core.api/isaacsim/core/api/loggers/data_logger.py
+!exts/isaacsim.core.api/isaacsim/core/api/physics_context
+!exts/isaacsim.core.api/isaacsim/core/api/physics_context/physics_context.py
+!exts/isaacsim.core.api/isaacsim/core/api/scenes/
+!exts/isaacsim.core.api/isaacsim/core/api/scenes/scene.py
+!exts/isaacsim.core.api/isaacsim/core/api/simulation_context
+!exts/isaacsim.core.api/isaacsim/core/api/simulation_context/simulation_context.py
+!exts/isaacsim.core.api/isaacsim/core/api/world
+!exts/isaacsim.core.api/isaacsim/core/api/world/world.py
+
+## core utils
+!exts/isaacsim.core.utils
+!exts/isaacsim.core.utils/isaacsim
+!exts/isaacsim.core.utils/isaacsim/core
+!exts/isaacsim.core.utils/isaacsim/core/utils
+!exts/isaacsim.core.utils/isaacsim/core/utils/stage.py
+
+
+## jupyter
+!exts/isaacsim.code_editor.jupyter
+!exts/isaacsim.code_editor.jupyter/config
+!exts/isaacsim.code_editor.jupyter/config/extension.toml
+!exts/isaacsim.code_editor.jupyter/data
+!exts/isaacsim.code_editor.jupyter/data/launchers
+!exts/isaacsim.code_editor.jupyter/data/launchers/jupyter_launcher.py
+
+### standalone examples
+!standalone_examples
+!standalone_examples/api
+!standalone_examples/api/isaacsim.ros2.bridge
+!standalone_examples/api/isaacsim.ros2.bridge/moveit.py
