@@ -41,9 +41,9 @@ exts."isaacsim.code_editor.jupyter".notebook_ip = "127.0.0.1"
 # Port number where the Jupyter server is being started.
 exts."isaacsim.code_editor.jupyter".notebook_port = 8228
 # Jupyter server token for token-based authentication. If empty, the server will start without authentication.
-exts."isaacsim.code_editor.jupyter".notebook_token = ""
+exts."isaacsim.code_editor.jupyter".notebook_token = "roboinsight"
 # The directory to use for notebooks. If empty, the directory is ``data/notebooks`` within the extension tree.
-exts."isaacsim.code_editor.jupyter".notebook_dir = ""
+exts."isaacsim.code_editor.jupyter".notebook_dir = "../../../../roboinsight/notebooks"
 # Jupyter server command line options other than ``--ip``, ``--port``, ``--token`` and ``--notebook-dir``.
 exts."isaacsim.code_editor.jupyter".command_line_options = "--allow-root --no-browser --JupyterApp.answer_yes=True"
 
