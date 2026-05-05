@@ -91,11 +91,10 @@ def main(ip: str = "127.0.0.1", port: int = 8228, argv: List[str] = []) -> None:
 
 
 if __name__ == "__main__":
-
     argv = sys.argv[1:]
 
     # testing the launcher
-    if not len(argv):
+    if not argv:
         print("Testing the launcher")
         argv = [
             "127.0.0.1",  # ip
@@ -113,34 +112,36 @@ if __name__ == "__main__":
     # get notebook_dir
     if not argv[3]:
         notebook_dir = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "notebooks"))
-        notebook_dir = "--notebook-dir={}".format(notebook_dir)
+        notebook_dir = f"--notebook-dir={notebook_dir}"
+    else:
+        notebook_dir = f"--notebook-dir={argv[3]}"
 
     # get token
-    token = "--ServerApp.token={}".format(token)
+    token = f"--ServerApp.token={token}"
 
     # assets path
     app_dir = []
     for p in PACKAGES_PATH:
-        print("Checking package to app_dir: {}".format(p))
+        print(f"Checking package to app_dir: {p}")
         if os.path.exists(os.path.join(p, "share", "jupyter", "lab")):
-            app_dir = ["--app-dir={}".format(os.path.join(p, "share", "jupyter", "lab"))]
+            app_dir = [f"--app-dir={os.path.join(p, 'share', 'jupyter', 'lab')}"]
         if os.path.exists(os.path.join(p, "jupyterlab", "static")):
-            app_dir = ["--app-dir={}".format(os.path.join(p, "jupyterlab"))]
+            app_dir = [f"--app-dir={os.path.join(p, 'jupyterlab')}"]
         if app_dir:
             break
-    print("app_dir: {}".format(app_dir))
+    print(f"app_dir: {app_dir}")
 
     # clean up the argv
     argv = app_dir + [token] + [notebook_dir] + argv[4].split(" ")
 
     # run the launcher
-    print("Starting Jupyter Lab at {}:{}".format(ip, port))
-    print(" with argv: {}".format(" ".join(argv)))
+    print(f"Starting Jupyter Lab at {ip}:{port}")
+    print(f" with argv: {' '.join(argv)}")
 
     main(ip=ip, port=port, argv=argv)
 
     # delete notebook.txt
     try:
         os.remove(os.path.join(SCRIPT_DIR, "notebook.txt"))
-    except:
+    except Exception:
         pass
