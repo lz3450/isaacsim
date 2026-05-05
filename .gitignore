@@ -53,4 +53,5 @@
 !standalone_examples/api/isaacsim.ros2.bridge/moveit.py
 
 ### RoboInsight
-!roboinsight/*
+!/roboinsight
+!/roboinsight/*
