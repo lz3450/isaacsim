@@ -95,11 +95,10 @@ def main(ip: str = "127.0.0.1", port: int = 8228, argv: list[str] | None = None)
 
 
 if __name__ == "__main__":
-
     argv = sys.argv[1:]
 
     # testing the launcher
-    if not len(argv):
+    if not argv:
         print("Testing the launcher")
         argv = [
             "127.0.0.1",  # ip
@@ -118,6 +117,8 @@ if __name__ == "__main__":
     if not argv[3]:
         notebook_dir = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "notebooks"))
         notebook_dir = f"--notebook-dir={notebook_dir}"
+    else:
+        notebook_dir = f"--notebook-dir={argv[3]}"
 
     # get token
     token = f"--ServerApp.token={token}"
@@ -127,9 +128,9 @@ if __name__ == "__main__":
     for p in PACKAGES_PATH:
         print(f"Checking package to app_dir: {p}")
         if os.path.exists(os.path.join(p, "share", "jupyter", "lab")):
-            app_dir = ["--app-dir={}".format(os.path.join(p, "share", "jupyter", "lab"))]
+            app_dir = [f"--app-dir={os.path.join(p, 'share', 'jupyter', 'lab')}"]
         if os.path.exists(os.path.join(p, "jupyterlab", "static")):
-            app_dir = ["--app-dir={}".format(os.path.join(p, "jupyterlab"))]
+            app_dir = [f"--app-dir={os.path.join(p, 'jupyterlab')}"]
         if app_dir:
             break
     print(f"app_dir: {app_dir}")
@@ -139,7 +140,7 @@ if __name__ == "__main__":
 
     # run the launcher
     print(f"Starting Jupyter Lab at {ip}:{port}")
-    print(" with argv: {}".format(" ".join(argv)))
+    print(f" with argv: {' '.join(argv)}")
 
     main(ip=ip, port=port, argv=argv)
 
