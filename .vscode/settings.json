@@ -1,9 +1,4 @@
 {
-    "typescript.tsc.autoDetect": "off",
-    "grunt.autoDetect": "off",
-    "jake.autoDetect": "off",
-    "gulp.autoDetect": "off",
-    "npm.autoDetect": "off",
     // Those paths are automatically filled by build system, see `repo.toml` for configuration:
     "python.analysis.extraPaths": [
         "exts/isaacsim.app.about",
@@ -669,6 +664,13 @@
 ],
     "python.languageServer": "Pylance",
     "python.defaultInterpreterPath": "${workspaceFolder}/kit/python/bin/python3",
+    "python-envs.pythonProjects": [
+        {
+            "path": ".",
+            "envManager": "ms-python.python:system",
+            "packageManager": "ms-python.python:pip"
+        }
+    ],
     // Ruff
     "ruff.lint.ignore": [
         "E402",
