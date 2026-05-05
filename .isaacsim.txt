@@ -16,6 +16,7 @@ PYTHONPATH
 ri
 rmw
 RMW
+roboinsight
 rtx
 urdf
 wayland
