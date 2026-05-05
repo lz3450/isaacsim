@@ -12,6 +12,9 @@ echo "SCRIPT_DIR=$SCRIPT_DIR"
 
 ################################################################################
 
+### Environment Variables
+export PATH="$SCRIPT_DIR:$PATH"
+
 ###
 export DISPLAY=":0"
 
