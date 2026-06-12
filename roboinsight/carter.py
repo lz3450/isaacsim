@@ -3,9 +3,15 @@
 # carter.py
 #
 
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--headless", type=bool, default=False)
+args = parser.parse_args()
+
 from isaacsim.simulation_app import SimulationApp
 
-simulation_app = SimulationApp({"headless": False})
+simulation_app = SimulationApp({"headless": args.headless})
 
 from isaacsim.core.utils.extensions import enable_extension
 from isaacsim.core.utils.nucleus import get_assets_root_path
