@@ -14,7 +14,7 @@ from isaacsim.simulation_app import SimulationApp
 simulation_app = SimulationApp({"headless": args.headless})
 
 from isaacsim.core.utils.extensions import enable_extension
-from isaacsim.core.utils.nucleus import get_assets_root_path
+from isaacsim.storage.native import get_assets_root_path
 from isaacsim.core.utils.stage import open_stage
 from isaacsim.core.api import World
 
