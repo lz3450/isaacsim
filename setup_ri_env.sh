@@ -24,20 +24,21 @@ export RMW_IMPLEMENTATION="rmw_fastrtps_cpp"
 # export RMW_IMPLEMENTATION="rmw_cyclonedds_cpp"
 echo "RMW_IMPLEMENTATION=$RMW_IMPLEMENTATION"
 
-ISAAC_SIM_ROS_JAZZY_SETUP="$SCRIPT_DIR/../IsaacSim-ros_workspaces/build_ws/jazzy/jazzy_ws/install/local_setup.$ROS2_SHELL"
-if [ -f "$ISAAC_SIM_ROS_JAZZY_SETUP" ]; then
-    echo "isaac_sim_ros_jazzy ($ROS2_SHELL)"
-    . "$ISAAC_SIM_ROS_JAZZY_SETUP"
+ROS2_JAZZY_SETUP="$SCRIPT_DIR/../ros2_ws/install/local_setup.$ROS2_SHELL"
+# ROS2_JAZZY_SETUP="/opt/ros/jazzy/local_setup.$ROS2_SHELL"
+if [ -f "$ROS2_JAZZY_SETUP" ]; then
+    echo "ros2 ($ROS2_SHELL)"
+    . "$ROS2_JAZZY_SETUP"
 else
-    echo "Failed to set up ros2 jazzy for isaacsim"
+    echo "Failed to set up ros2_jazzy"
     return 1
 fi
 
-ISAAC_SIM_ROS_WS_SETUP="$SCRIPT_DIR/../IsaacSim-ros_workspaces/build_ws/jazzy/isaac_sim_ros_ws/install/local_setup.$ROS2_SHELL"
-if [ -f "$ISAAC_SIM_ROS_WS_SETUP" ]; then
+ISAAC_SIM_JAZZY_WS_SETUP="$SCRIPT_DIR/../IsaacSim-ros_workspaces/jazzy_ws/install/local_setup.$ROS2_SHELL"
+if [ -f "$ISAAC_SIM_JAZZY_WS_SETUP" ]; then
     echo "isaac_sim_ros_ws ($ROS2_SHELL)"
-    . "$ISAAC_SIM_ROS_WS_SETUP"
+    . "$ISAAC_SIM_JAZZY_WS_SETUP"
 else
-    echo "Failed to set up isaac_sim_ros_ws for isaacsim"
+    echo "Failed to set up isaac_sim_jazzy_ws"
     return 1
 fi
