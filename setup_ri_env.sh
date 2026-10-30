@@ -24,8 +24,8 @@ export RMW_IMPLEMENTATION="rmw_fastrtps_cpp"
 # export RMW_IMPLEMENTATION="rmw_cyclonedds_cpp"
 echo "RMW_IMPLEMENTATION=$RMW_IMPLEMENTATION"
 
-ROS2_JAZZY_SETUP="$SCRIPT_DIR/../ros2_ws/install/local_setup.$ROS2_SHELL"
-# ROS2_JAZZY_SETUP="/opt/ros/jazzy/local_setup.$ROS2_SHELL"
+# ROS2_JAZZY_SETUP="$SCRIPT_DIR/../ros2_ws/install/local_setup.$ROS2_SHELL"
+ROS2_JAZZY_SETUP="/opt/ros/jazzy/local_setup.$ROS2_SHELL"
 if [ -f "$ROS2_JAZZY_SETUP" ]; then
     echo "ros2 ($ROS2_SHELL)"
     . "$ROS2_JAZZY_SETUP"
