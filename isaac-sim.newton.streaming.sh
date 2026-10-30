@@ -19,4 +19,4 @@ if [ "$NO_ROS_ENV" == "false" ] && [ -f "$SCRIPT_DIR/setup_ros_env.sh" ]; then
     source "$SCRIPT_DIR/setup_ros_env.sh"
 fi
 
-exec "$SCRIPT_DIR/kit/kit" "$SCRIPT_DIR/apps/isaacsim.exp.selector.kit"  "$@"
+exec "$SCRIPT_DIR/kit/kit" "$SCRIPT_DIR/apps/isaacsim.exp.full.newton.streaming.kit" --no-window  "$@"
